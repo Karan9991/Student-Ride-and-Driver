@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Profile">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:id="@+id/scrollViewlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="8dp"
+
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+
+            >
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/simpleTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabBackground="@android:color/white"
+        android:visibility="gone"
+        app:tabIndicatorColor="@color/progressbarcolor"
+        app:tabSelectedTextColor="@color/progressbarcolor"
+        app:tabTextColor="@color/progressbarcolor" />
+
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:text="EDIT"
+                android:background="@drawable/ripple_button"
+                android:shadowColor="@android:color/transparent"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/simpleTabLayout"
+                app:layout_constraintStart_toStartOf="@+id/simpleTabLayout"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="61dp"
+                android:layout_height="58dp"
+                android:layout_below="@+id/button3"
+                android:background="@drawable/shapeemail"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:onClick="selectImage"
+                app:layout_constraintTop_toBottomOf="@+id/button3"
+                app:srcCompat="@drawable/ic_menu_camera"
+                tools:layout_editor_absoluteX="8dp" />
+
+
+
+           <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="vertical"
+               android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2">
+
+
+        <EditText
+            android:id="@+id/firstname"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shapeemail"
+            android:drawableLeft="@drawable/ic_person_black_24dp"
+            android:drawablePadding="10dp"
+            android:hint="First Name"
+            android:padding="15dp"
+            android:textCursorDrawable="@null"
+            android:singleLine="true"
+            android:textColor="@color/progressbarcolor"
+            android:textColorHighlight="@color/progressbarcolor"
+            android:textColorHint="@color/progressbarcolor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="textCapWords"
+            android:maxLength="25"/>
+
+
+        <EditText
+            android:id="@+id/lastname"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shapeemail"
+            android:drawableLeft="@drawable/ic_person_black_24dp"
+            android:drawablePadding="10dp"
+            android:hint="Last Name"
+            android:padding="15dp"
+            android:textCursorDrawable="@null"
+            android:singleLine="true"
+            android:textColor="@color/progressbarcolor"
+            android:textColorHighlight="@color/progressbarcolor"
+            android:textColorHint="@color/progressbarcolor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+            android:inputType="textCapWords"
+            android:maxLength="25"/>
+
+        <EditText
+            android:id="@+id/studentid"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shapeemail"
+            android:drawableLeft="@drawable/sid"
+            android:drawablePadding="10dp"
+            android:hint="Student Id"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:textColor="@color/progressbarcolor"
+            android:textColorHighlight="@color/progressbarcolor"
+            android:textColorHint="@color/progressbarcolor"
+            android:textCursorDrawable="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+            android:maxLength="15"/>
+
+
+
+        <EditText
+            android:id="@+id/university"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shapeemail"
+            android:drawableLeft="@drawable/ic_school_black_24dp"
+            android:drawablePadding="10dp"
+            android:hint="University"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:textCursorDrawable="@null"
+            android:textColor="@color/progressbarcolor"
+            android:textColorHighlight="@color/progressbarcolor"
+            android:textColorHint="@color/progressbarcolor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="textCapSentences"
+            android:maxLength="35"
+            />
+
+               <EditText
+                   android:id="@+id/emailedit"
+                   android:layout_width="300dp"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="8dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_marginEnd="8dp"
+                   android:background="@drawable/shapeemail"
+                   android:drawableLeft="@drawable/ic_email_black_24dp"
+                   android:drawablePadding="10dp"
+                   android:hint="Email Id"
+                   android:padding="15dp"
+                   android:singleLine="true"
+                   android:textCursorDrawable="@null"
+                   android:textColor="@color/progressbarcolor"
+                   android:textColorHighlight="@color/progressbarcolor"
+                   android:textColorHint="@color/progressbarcolor"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent"
+                   android:inputType="textEmailAddress"
+                   android:maxLength="35"
+                   />
+        <EditText
+            android:id="@+id/passwordedit"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/shapeemail"
+            android:drawableLeft="@drawable/ic_lock_black_24dp"
+            android:drawablePadding="10dp"
+            android:hint="Password"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:textColor="@color/progressbarcolor"
+            android:textColorHighlight="@color/progressbarcolor"
+            android:textColorHint="@color/progressbarcolor"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textCursorDrawable="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="textPassword"
+            android:maxLength="15"
+            />
+               <EditText
+                   android:id="@+id/confrmpasswordedit"
+                   android:layout_width="300dp"
+                   android:layout_height="wrap_content"
+                   android:layout_marginStart="8dp"
+                   android:layout_marginTop="10dp"
+                   android:layout_marginEnd="8dp"
+                   android:background="@drawable/shapeemail"
+                   android:drawableLeft="@drawable/ic_lock_black_24dp"
+                   android:drawablePadding="10dp"
+                   android:hint="Confirm Password"
+                   android:padding="15dp"
+                   android:singleLine="true"
+                   android:textColor="@color/progressbarcolor"
+                   android:textColorHighlight="@color/progressbarcolor"
+                   android:textColorHint="@color/progressbarcolor"
+                   app:layout_constraintEnd_toEndOf="parent"
+                   android:textCursorDrawable="@null"
+                   app:layout_constraintStart_toStartOf="parent"
+                   app:layout_constraintTop_toTopOf="parent"
+                   android:inputType="textPassword"
+                   android:maxLength="15"
+                   />
+
+
+                <EditText
+                    android:id="@+id/phoneedit"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/shapeemail"
+                    android:drawableLeft="@drawable/ic_phone_android_black_24dp"
+                    android:drawablePadding="10dp"
+                    android:textCursorDrawable="@null"
+                    android:hint="Phone"
+                    android:padding="15dp"
+                    android:singleLine="true"
+                    android:textColor="@color/progressbarcolor"
+                    android:textColorHighlight="@color/progressbarcolor"
+                    android:textColorHint="@color/progressbarcolor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:inputType="phone"
+                    android:maxLength="13"
+                    />
+
+        <Button
+            android:id="@+id/savebtn"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:background="@drawable/ripple_button"
+            android:shadowColor="@android:color/transparent"
+            android:text="SAVE"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="20dp"/>
+
+               <LinearLayout
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:layout_marginBottom="10dp"
+                   >
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="Already have Account?"
+                       android:layout_marginRight="10dp"/>
+                   <TextView
+                       android:id="@+id/textviewsignin"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:textColor="@color/colorPrimary"
+                       android:text="@string/signin"
+                       android:textStyle="bold"
+                       />
+               </LinearLayout>
+
+
+
+               />
+           </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+    <ProgressBar
+
+        android:id="@+id/circularProgressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="100dp"
+        android:layout_height="101dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="50"
+        android:progressDrawable="@drawable/circular"
+        android:secondaryProgress="100"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

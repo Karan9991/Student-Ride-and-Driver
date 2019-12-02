@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "335524830268",
+    "firebase_url": "https://citric-plexus-190723.firebaseio.com",
+    "project_id": "citric-plexus-190723",
+    "storage_bucket": "citric-plexus-190723.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335524830268:android:a40ed6eb08e920be",
+        "android_client_info": {
+          "package_name": "com.example.StudentDriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "335524830268-l2q17rt8n8knp65rkltl49vkbg3jbpl9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.StudentDriver",
+            "certificate_hash": "8609b63f8b1384301e91702b228ffc54f1e0d590"
+          }
+        },
+        {
+          "client_id": "335524830268-q8tv9bfjph4ams7kq8at3c4gnbh329k2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwbbnqaDgZs5AecmLLvy3cKWFPJf06rYQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "335524830268-q8tv9bfjph4ams7kq8at3c4gnbh329k2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

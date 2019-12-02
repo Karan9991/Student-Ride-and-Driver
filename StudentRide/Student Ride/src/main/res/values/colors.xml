@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#38ACEC</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorBlue">#4169e1</color>
+    <color name="white">#FFFFFF</color>
+    <color name="lightslate">#4863A0</color>
+    <color name="lightslate2">#357EC7</color>
+    <color name="progressbarcolor">#38ACEC</color>
+    <color name="blu">#ADDFFF</color>
+
+
+    <!--    <color name="colorPrimary">#357EC7</color>-->
+
+    <!--#43C6DB-->
+    <!--#4EE2EC-->
+
+    <!--#737CA1-->
+    <!--#4863A0
+    #157DEC-->
+
+    <color name="color_login_button">#FF3366</color>
+    <color name="color_login_buttonpress">#EE3162</color>
+    <color name="color_signup_button">#F2F2F2</color>
+    <color name="color_signup_buttonpress">#EBEBEB</color>
+    <color name="color_primary_men">#00ACC1</color>
+    <color name="color_product_bottom">#ffffff</color>
+    <color name="color_edittext_hint">#999</color>
+
+    <color name="color_edittext_label">#fff</color>
+</resources>

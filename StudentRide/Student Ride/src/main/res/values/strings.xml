@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">StudentRide</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">View Profile</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key">AIzaSyAeNdw_YqLCgEnvv8KqSVv28BoiXOKvPOo</string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="total_online_drivers">Total Online Drivers : </string>
+    <string name="need_location">Enable GPS SERVICE</string>
+    <string name="location_content">This app wants to change your device settings use GPS,Wi-Fi and cell networks for your location</string>
+    <string name="signup"><u>Sign up</u></string>
+    <string name="signin"><u>Sign in</u></string>
+    <string name="Success">Search</string>
+    <string name="Loading">Searching...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>
