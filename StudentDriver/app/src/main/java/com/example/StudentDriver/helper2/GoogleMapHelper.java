@@ -24,7 +24,7 @@ public final class GoogleMapHelper {
 
 
     public final MarkerOptions getDriverMarkerOptions(LatLng position) {
-        MarkerOptions options = this.getMarkerOptions(R.drawable.car_icon, position);
+        MarkerOptions options = this.getMarkerOptions(R.drawable.ic_car, position);
         options.flat(true);
         return options;
     }

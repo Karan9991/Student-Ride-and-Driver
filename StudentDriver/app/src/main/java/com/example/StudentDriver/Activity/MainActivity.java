@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,7 +90,7 @@ Button btn,ridecom;
     DatabaseReference databaseReference = firebaseDatabase.getReference();
     DatabaseReference mdata = databaseReference.child("passengerpicked");
     String data;
-
+    ImageView image;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +98,8 @@ Button btn,ridecom;
         res = new StringBuilder();
 btn = (Button)findViewById(R.id.pickedpassengerbtn);
 ridecom = (Button)findViewById(R.id.ridecompleted);
+
+        image = new ImageView(this);
 
 mdata.addValueEventListener(this);
 btn.setOnClickListener(new View.OnClickListener() {
@@ -169,7 +174,7 @@ if(dataSnapshot.getValue(String.class)!=null){
     String key = dataSnapshot.getKey();
     if (key.equals("passengerpicked")){
          data = dataSnapshot.getValue(String.class);
-        Toast.makeText(getApplicationContext(),"firebase "+data,Toast.LENGTH_SHORT).show();
+      //  Toast.makeText(getApplicationContext(),"firebase "+data,Toast.LENGTH_SHORT).show();
     }
 }
     }
@@ -193,6 +198,8 @@ if(dataSnapshot.getValue(String.class)!=null){
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 res.append("\n" + cursor.getString(cursor.getColumnIndex("id")) + "-" + cursor.getString(cursor.getColumnIndex("name")) + "-" + cursor.getString(cursor.getColumnIndex("source")) + "-" + cursor.getString(cursor.getColumnIndex("destination")));
+                image.setImageBitmap(convertToBitmap(cursor.getBlob(cursor.getColumnIndex("photo"))));
+              //  image.setImageDrawable(cursor.getBlob(cursor.getColumnIndex("photo")));
                 cursor.moveToNext();
             }
 
@@ -211,7 +218,7 @@ if(dataSnapshot.getValue(String.class)!=null){
                                  //   Toast.makeText(getApplicationContext(),"Tcp"+contentProvider,Toast.LENGTH_SHORT).show();
 
                                 }
-                            })
+                            }).setView(image)
                     .setNegativeButton("Request Reject", new DialogInterface.OnClickListener() {
                         @TargetApi(11)
                         public void onClick(DialogInterface dialog, int id) {
@@ -378,5 +385,9 @@ if(dataSnapshot.getValue(String.class)!=null){
 //        }
     }
 
+    private Bitmap convertToBitmap(byte[] b){
 
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
+
+    }
 }

@@ -19,10 +19,11 @@ public class MyProvider extends ContentProvider {
     public   static final String URL = "content://" + PROVIDER_NAME + "/cte";
     public   static final Uri CONTENT_URI = Uri.parse(URL);
 
-  public  static final String id = "id";
+    public  static final String id = "id";
     public  static final String name = "name";
     public static final String sourcce = "source";
     public  static final String destinationn = "destination";
+    public static final String photo = "photo";
     public static final int uriCode = 1;
     public   static final UriMatcher uriMatcher;
     private static HashMap<String, String> values;
@@ -119,10 +120,10 @@ public class MyProvider extends ContentProvider {
     private SQLiteDatabase db;
     static final String DATABASE_NAME = "mydb";
     static final String TABLE_NAME = "names";
-    static final int DATABASE_VERSION = 1;
+    static final int DATABASE_VERSION = 5;
     static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME
             + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + " source TEXT NOT NULL, " + " destination TEXT NOT NULL, "
-            + " name TEXT NOT NULL);";
+            + " name TEXT NOT NULL, " + photo + " BLOB );";
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {

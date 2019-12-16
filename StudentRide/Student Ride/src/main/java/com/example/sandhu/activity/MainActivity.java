@@ -9,10 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 //import android.support.v4.app.ActivityCompat;
@@ -31,12 +34,14 @@ import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 
+import com.example.sandhu.Student.DatabaseHelper;
 import com.example.sandhu.Student.FetchURL;
 import com.example.sandhu.Student.GpsTracker;
 import com.example.sandhu.Student.MapsActivity;
 import com.example.sandhu.Student.MyProvider;
 import com.example.sandhu.Student.R;
 import com.example.sandhu.Student.TaskLoadedCallback;
+import com.example.sandhu.Student.UserModel;
 import com.example.sandhu.interfaces2.LatLngInterpolatorNew;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -81,6 +86,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -116,7 +122,10 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
     DatabaseReference mdata = mdatabaseReference.child("passengerpicked");
     double dlat,dlng;
     private GoogleMap mMap;
-
+    DatabaseHelper databaseHelper;
+    private static final int CAMERA_REQUEST = 200;
+    public Bitmap bp;
+    public byte[] photo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,11 +138,17 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 
 //inserting content provider
         gpsTracker = new GpsTracker(getApplication());
+        databaseHelper = new DatabaseHelper(getApplicationContext());
        // driver = new Driver();
+        bp = convertToBitmap(databaseHelper.getMoviep(1).getImage());
+       // bp=decodeUri(databaseHelper.getMoviep(1).getImage(), 400);
+
+        getValues();
         ContentValues values = new ContentValues();
-        values.put(MyProvider.name, "Karan");
+        values.put(MyProvider.name, databaseHelper.getMoviep(1).getFname());
         values.put(MyProvider.sourcce, 43.6532);
         values.put(MyProvider.destinationn, 79.3832);
+        values.put(MyProvider.photo, databaseHelper.getMoviep(1).getImage());
         Uri uri = getContentResolver().insert(MyProvider.CONTENT_URI, values);
 //        Toast.makeText(getBaseContext(), "New record inserted"+driver.getLat()+driver.getLng(), Toast.LENGTH_SHORT)
      //           .show();
@@ -199,7 +214,81 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
     public void onCancelled(@NonNull DatabaseError databaseError) {
 
     }
+// convert image to store in content provider database
+//@Override
+//protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    switch(requestCode) {
+//        case 2:
+//            if(resultCode == RESULT_OK){
+//                Uri choosenImage = data.getData();
+//
+//                if(choosenImage !=null){
+//
+//                    bp=decodeUri(choosenImage, 400);
+//                    //pic.setImageBitmap(bp);
+//                }
+//            }
+//    }
+//    if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
+//        Uri choosenImage = data.getData();
+//
+//        if(choosenImage !=null){
+//
+//            bp=decodeUri(choosenImage, 400);
+//            //  pic.setImageBitmap(bp);
+//        }
+//
+//    }
+//}
 
+    protected Bitmap decodeUri(Uri selectedImage, int REQUIRED_SIZE) {
+
+        try {
+
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
+
+            // The new size we want to scale to
+            // final int REQUIRED_SIZE =  size;
+
+            // Find the correct scale value. It should be the power of 2.
+            int width_tmp = o.outWidth, height_tmp = o.outHeight;
+            int scale = 1;
+            while (true) {
+                if (width_tmp / 2 < REQUIRED_SIZE
+                        || height_tmp / 2 < REQUIRED_SIZE) {
+                    break;
+                }
+                width_tmp /= 2;
+                height_tmp /= 2;
+                scale *= 2;
+            }
+
+            // Decode with inSampleSize
+            BitmapFactory.Options o2 = new BitmapFactory.Options();
+            o2.inSampleSize = scale;
+            return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    private byte[] profileImage(Bitmap b){
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.PNG, 0, bos);
+        return bos.toByteArray();
+
+    }
+
+
+    private void getValues(){
+        photo = profileImage(bp);
+    }
     //    //Getting content provider values from diver app
 //    @Override
 //    public androidx.loader.content.Loader
@@ -561,6 +650,10 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 //            this();
 //        }
     }
+    private Bitmap convertToBitmap(byte[] b){
 
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
+
+    }
 }
 
