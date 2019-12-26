@@ -195,49 +195,49 @@ firebaseUser = firebaseAuth.getCurrentUser();
             public void onClick(View p1) {
                 if (checkvalidation()) {
                     String pcode = sharedPreferences.getString("pcode", null);
-                    if(pcode!=null){
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Signin.this);
-
-                        //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-
-                        // Setting Dialog Title
-                        alertDialog.setTitle("Enter Your Verification Code");
-
-                        // Setting Dialog Message
-                        //alertDialog.setMessage("Enter Password");
-                        final EditText input = new EditText(Signin.this);
-                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.MATCH_PARENT);
-                        input.setLayoutParams(lp);
-                        alertDialog.setView(input);
-                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                        input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
-                        input.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                                if (input.length()==4&&input.getText().toString().equals(pcode)){
-                                    nextActivity();
-                                }else if (input.length()==4&&input.getText().toString()!=pcode){
-                                    Toast.makeText(getApplicationContext(),"Incorrect Verification Code",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-
-
-                        alertDialog.show();
-                    }
-else {
+//                    if(pcode!=null){
+//                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Signin.this);
+//
+//                        //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+//
+//                        // Setting Dialog Title
+//                        alertDialog.setTitle("Enter Your Verification Code");
+//
+//                        // Setting Dialog Message
+//                        //alertDialog.setMessage("Enter Password");
+//                        final EditText input = new EditText(Signin.this);
+//                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                                LinearLayout.LayoutParams.MATCH_PARENT,
+//                                LinearLayout.LayoutParams.MATCH_PARENT);
+//                        input.setLayoutParams(lp);
+//                        alertDialog.setView(input);
+//                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+//                        input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
+//                        input.addTextChangedListener(new TextWatcher() {
+//                            @Override
+//                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//                            }
+//
+//                            @Override
+//                            public void afterTextChanged(Editable editable) {
+//                                if (input.length()==4&&input.getText().toString().equals(pcode)){
+//                                    nextActivity();
+//                                }else if (input.length()==4&&input.getText().toString()!=pcode){
+//                                    Toast.makeText(getApplicationContext(),"Incorrect Verification Code",Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+//
+//
+//                        alertDialog.show();
+//                    }
+//else {
                         if ((int) button_login.getTag() == 1) {
                             return;
                         } else if ((int) button_login.getTag() == 2) {
@@ -274,7 +274,7 @@ else {
                                 // TODO: Implement this method
                             }
                         }).start();
-                    }
+                    //}
                 }
             }
         });

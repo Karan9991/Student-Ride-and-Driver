@@ -120,7 +120,7 @@ public class MyProvider extends ContentProvider {
     private SQLiteDatabase db;
     static final String DATABASE_NAME = "mydb";
     static final String TABLE_NAME = "names";
-    static final int DATABASE_VERSION = 5;
+    static final int DATABASE_VERSION = 15;
     static final String CREATE_DB_TABLE = " CREATE TABLE " + TABLE_NAME
             + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " + " source TEXT NOT NULL, " + " destination TEXT NOT NULL, "
             + " name TEXT NOT NULL, " + photo + " BLOB );";

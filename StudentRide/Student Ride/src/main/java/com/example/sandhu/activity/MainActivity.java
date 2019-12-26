@@ -22,6 +22,8 @@ import android.os.Looper;
 //import android.support.v4.app.Fragment;
 ///import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,6 +122,11 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     DatabaseReference mdatabaseReference = firebaseDatabase.getReference();
     DatabaseReference mdata = mdatabaseReference.child("passengerpicked");
+    //cancel ride
+    FirebaseDatabase firebaseCancelR = FirebaseDatabase.getInstance();
+    DatabaseReference databaseRefCancelR = firebaseCancelR.getReference();
+    DatabaseReference cancelRdata = databaseRefCancelR.child("Cancelride");
+    String rideCanceldata;
     double dlat,dlng;
     private GoogleMap mMap;
     DatabaseHelper databaseHelper;
@@ -135,7 +142,7 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
       //  Toast.makeText(getApplicationContext(),"Tcp"+contentProvider,Toast.LENGTH_SHORT).show();
         res = new StringBuilder();
         mdata.addValueEventListener(this);
-
+        cancelRdata.addValueEventListener(this);
 //inserting content provider
         gpsTracker = new GpsTracker(getApplication());
         databaseHelper = new DatabaseHelper(getApplicationContext());
@@ -149,9 +156,29 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
         values.put(MyProvider.sourcce, 43.6532);
         values.put(MyProvider.destinationn, 79.3832);
         values.put(MyProvider.photo, databaseHelper.getMoviep(1).getImage());
-        Uri uri = getContentResolver().insert(MyProvider.CONTENT_URI, values);
-//        Toast.makeText(getBaseContext(), "New record inserted"+driver.getLat()+driver.getLng(), Toast.LENGTH_SHORT)
-     //           .show();
+       // Uri uri =
+      //  getContentResolver().insert(MyProvider.CONTENT_URI, values);
+        Cursor countCursor = getContentResolver().query(MyProvider.CONTENT_URI,
+                new String[] {"count(*) AS count"},
+                null,
+                null,
+                null);
+
+        countCursor.moveToFirst();
+        int count = countCursor.getInt(0);
+
+        if (count==0){
+            getContentResolver().insert(MyProvider.CONTENT_URI, values);
+            Toast.makeText(getBaseContext(), "inser "+count, Toast.LENGTH_SHORT).show();
+
+        }
+        if (count>=1) {
+            getContentResolver().update(MyProvider.CONTENT_URI, values,null,null);
+                    Toast.makeText(getBaseContext(), "upda "+count, Toast.LENGTH_SHORT).show();
+
+        }
+//        Toast.makeText(getBaseContext(), "New "+count, Toast.LENGTH_SHORT)
+//                .show();
 
 ////////////////////////////  1   43.658038, -79.760535
 //        place1 = new MarkerOptions().position(new LatLng(43.658038, -79.760535)).title("Location 1");
@@ -202,7 +229,11 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
             if (key.equals("passengerpicked")){
                 data = dataSnapshot.getValue(String.class);
                // Toast.makeText(getApplicationContext(),"firebase "+data,Toast.LENGTH_SHORT).show();
-            }else {
+            }else  if (key.equals("Cancelride")){
+                rideCanceldata = dataSnapshot.getValue(String.class);
+                  //Toast.makeText(getApplicationContext(),"firebase "+rideCanceldata,Toast.LENGTH_SHORT).show();
+            }
+            else {
                 data = null;
             }
         }
@@ -654,6 +685,41 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 
         return BitmapFactory.decodeByteArray(b, 0, b.length);
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.cancel_ride, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.cancel_ride:
+                new AlertDialog.Builder(MainActivity.this)
+                        //.setTitle("Passenger : "+contentProvider)
+                         .setMessage("Are you sure?")
+                        // .setIcon(image)
+                        .setPositiveButton("Yes",
+                                new DialogInterface.OnClickListener() {
+                                    @TargetApi(11)
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        cancelRdata.setValue("RideCanceled");
+
+                                    }
+                                })//.setView(image)
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @TargetApi(11)
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        }).show();
+                break;
+//            case R.id.menuitem2:
+//                Toast.makeText(this, "Menu item 2 selected", Toast.LENGTH_SHORT).show();
+//                break;
+        }
+        return true;
     }
 }
 
