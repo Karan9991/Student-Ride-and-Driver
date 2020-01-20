@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,19 +29,37 @@ import com.braintreepayments.api.dropin.DropInResult;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.HttpClient;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.example.sandhu.signin.Signin;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import okhttp3.CipherSuite;
+import okhttp3.ConnectionSpec;
+import okhttp3.OkHttpClient;
+import okhttp3.TlsVersion;
+
 public class User_Payment extends AppCompatActivity {
     private static final int REQUEST_CODE = 1234;
-    final String API_GET_TOKEN = "http://192.168.2.23:80/braintree/main.php";
-final String API_CHECK_OUT = "http://192.168.2.23:80/braintree/checkout.php";
+//    final String API_GET_TOKEN = "http://192.168.2.24:80/braintree/main.php";
+//final String API_CHECK_OUT = "http://192.168.2.24:80/braintree/checkout.php";
+    final String API_GET_TOKEN = "http://192.168.2.17:80/braintree/main.php";
+    final String API_CHECK_OUT = "http://192.168.2.17:80/braintree/checkout.php";
 
 String token,amount;
 HashMap<String,String> paramsHash;
@@ -48,6 +67,8 @@ HashMap<String,String> paramsHash;
 Button btn_pay;
 EditText edt_amount;
 LinearLayout group_waiting, group_payment;
+
+SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +79,37 @@ LinearLayout group_waiting, group_payment;
 
         edt_amount = (EditText)findViewById(R.id.edt_amount);
         btn_pay = (Button)findViewById(R.id.btn_pay);
+        sharedPreferences = getSharedPreferences("userDetails", MODE_PRIVATE);
+
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Payment");
+
+        ConnectionSpec spec = new
+                ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+                .tlsVersions(TlsVersion.TLS_1_2)
+                .cipherSuites(
+                        CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                        CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                        CipherSuite.TLS_DHE_RSA_WITH_AES_128_GCM_SHA256)
+                .build();
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectionSpecs(Collections.singletonList(spec))
+                .build();
 updateAndroidSecurityProvider(this);
+
+        try {
+            // Google Play will install latest OpenSSL
+            ProviderInstaller.installIfNeeded(getApplicationContext());
+            SSLContext sslContext;
+            sslContext = SSLContext.getInstance("TLSv1.2");
+            sslContext.init(null, null, null);
+            sslContext.createSSLEngine();
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException
+                | NoSuchAlgorithmException | KeyManagementException e) {
+            e.printStackTrace();
+        }
         new getToken().execute();
 
         btn_pay.setOnClickListener(new View.OnClickListener() {
@@ -201,5 +252,46 @@ private void sendPayments(){
         } catch (GooglePlayServicesNotAvailableException e) {
             Log.e("SecurityException", "Google Play Services not available.");
         }
+    }
+    protected void checkTls() {
+        if (android.os.Build.VERSION.SDK_INT < 21) {
+            try {
+                ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+                    @Override
+                    public void onProviderInstalled() {
+                        SSLContext sslContext = null;
+                        try {
+                            sslContext = SSLContext.getInstance("TLSv1.2");
+                            sslContext.init(null, null, null);
+                            SSLEngine engine = sslContext.createSSLEngine();
+                        } catch (NoSuchAlgorithmException e) {
+                            e.printStackTrace();
+                        } catch (KeyManagementException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onProviderInstallFailed(int i, Intent intent) {
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public boolean onSupportNavigateUp() {
+        String emailsp = sharedPreferences.getString("signin", "");
+
+        if(emailsp.equals("")){
+            startActivity(new Intent(User_Payment.this, Signin.class));
+
+        }
+        else  {
+            startActivity(new Intent(User_Payment.this,MainActivity.class));
+        }
+        return super.onSupportNavigateUp();
     }
 }

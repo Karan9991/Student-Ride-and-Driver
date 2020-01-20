@@ -36,15 +36,25 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     // Add this line
-    implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation 'com.google.firebase:firebase-auth:18.1.0'
-    implementation 'com.google.firebase:firebase-database:18.0.1'
+    implementation 'com.google.firebase:firebase-core:17.2.1'
+    implementation 'com.google.firebase:firebase-auth:19.2.0'
+    implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //for store image in firebase
+    implementation 'com.google.firebase:firebase-storage:19.1.0'
+   // implementation 'com.firebaseui:firebase-ui-storage:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-storage:4.3.1'
+
+  //  implementation 'com.github.bumptech.glide:glide:4.7.1'
+    //implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 }
 // Add to the bottom of the file
 apply plugin: 'com.google.gms.google-services'

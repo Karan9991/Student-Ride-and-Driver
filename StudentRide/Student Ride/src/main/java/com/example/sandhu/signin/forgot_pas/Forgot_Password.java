@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -77,23 +78,28 @@ databaseHelper = new DatabaseHelper(getApplicationContext());
                fragmentTransaction.commit();
 
                sendEmailTask.execute();
-
+               Toast.makeText(Forgot_Password.this, "Verification code sent" +
+                       " Please check your E-Mail",Toast.LENGTH_SHORT).show();
                etemail.setVisibility(View.INVISIBLE);
                submit.setVisibility(View.INVISIBLE);
            }
-           else{
-               AlertDialog alertDialog = new AlertDialog.Builder(Forgot_Password.this).create();
-                alertDialog.setTitle("This E-Mail does not exist");
-               alertDialog.setMessage("Please Sign UP or enter the correct E-Mail");
-               alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                       new DialogInterface.OnClickListener() {
-                           public void onClick(DialogInterface dialog, int which) {
-                               dialog.dismiss();
-                           }
-                       });
-               alertDialog.show();
-              // Toast.makeText(getApplicationContext(),"This E-Mail does not exist" +
-                      // "Please Sign Up",Toast.LENGTH_SHORT).show();
+           else {
+               if (TextUtils.isEmpty(etemail.getText())) {
+                   etemail.setError("E-Mail is required!");
+               } else {
+                   AlertDialog alertDialog = new AlertDialog.Builder(Forgot_Password.this).create();
+                   alertDialog.setTitle("This E-Mail does not exist");
+                   alertDialog.setMessage("Please Sign UP or enter the correct E-Mail");
+                   alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                           new DialogInterface.OnClickListener() {
+                               public void onClick(DialogInterface dialog, int which) {
+                                   dialog.dismiss();
+                               }
+                           });
+                   alertDialog.show();
+                   // Toast.makeText(getApplicationContext(),"This E-Mail does not exist" +
+                   // "Please Sign Up",Toast.LENGTH_SHORT).show();
+               }
            }
 
 
@@ -112,7 +118,7 @@ databaseHelper = new DatabaseHelper(getApplicationContext());
         protected Void doInBackground(Void... params) {
             try {
                 email = etemail.getText().toString();
-
+//Fill your own credential
                 GmailSender sender = new GmailSender("000111karan@gmail.com", "xxxxxxxx");
                 //subject, body, sender, to
                 sender.sendMail("E-Mail Verification Code",

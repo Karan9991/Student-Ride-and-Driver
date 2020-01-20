@@ -3,6 +3,7 @@ package com.example.sandhu.Student;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,11 +24,17 @@ import com.example.sandhu.signin.Signin;
 import com.example.sandhu.signin.forgot_pas.Forgot_Password;
 import com.example.sandhu.signin.forgot_pas.GmailSender;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,7 +62,10 @@ import android.widget.Toast;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Random;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 
@@ -63,6 +73,7 @@ public class Profile extends AppCompatActivity  {
     EditText fname,lname,sid,uni,email,phone,pass,cpass;
     TextView t1,tvsignin;
     Button save,edit;
+    private Uri choosenImage;
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^" +
                     "(?=.*[0-9])" +         //at least 1 digit
@@ -99,12 +110,18 @@ private boolean pb = true;
      SharedPreferences sharedPreferences;
     Random random = new Random();
     String code,emailv;
+    //Storing image in firebase
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    int img = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         sharedPreferences = getSharedPreferences("userDetails", MODE_PRIVATE);
-      //  final SendEmailTask sendEmailTask = new SendEmailTask();
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+       // final SendEmailTask sendEmailTask = new SendEmailTask();
 //set progressbar
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
@@ -198,6 +215,7 @@ edit.setOnClickListener(new View.OnClickListener() {
            Toast.makeText(getApplication(),"No Record Found For Edit Profile",Toast.LENGTH_SHORT).show();
        }
        else {
+           save.setText("Update");
            fname.setText(db.getMoviep(1).getFname());
            lname.setText(db.getMoviep(1).getLname());
            sid.setText(db.getMoviep(1).getSid());
@@ -207,7 +225,7 @@ edit.setOnClickListener(new View.OnClickListener() {
            phone.setText(db.getMoviep(1).getPhone());
           // save.setText("UPDATE");
            // pic.setImageBitmap(convertToBitmap(db.getMoviep(1).getImage()));
-           //isButton = true;
+           isButton = true;
        }
     }
 });
@@ -217,8 +235,15 @@ edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pb =true;
-             // sendemail();
-                 savedata();
+                if (isButton==true){
+                    update();
+                }else {
+                    sendemail();
+                    savedata();
+                    uploadImage();
+                }
+isButton = false;
+
 //firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(), pass.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 //    @Override
 //    public void onComplete(@NonNull Task<AuthResult> task) {
@@ -255,6 +280,7 @@ public void sendemail() {
                 SharedPreferences.Editor mEditor = sharedPreferences.edit();
                 mEditor.putString("pcode", code);
                 mEditor.apply();
+                //Fill your own credential
                 GmailSender sender = new GmailSender("000111karan@gmail.com", "xxxxxxxx");
                 //subject, body, sender, to
                 sender.sendMail("E-Mail Verification Code",
@@ -264,8 +290,9 @@ public void sendemail() {
 //                SharedPreferences.Editor mEditor = sharedPreferences.edit();
 //                mEditor.putString("vemail", vemail);
 //                mEditor.apply();
-                Toast.makeText(getApplicationContext(),"veee"+vemail,Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(),"eee"+email.getText().toString(),Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(getApplicationContext(),"veee"+vemail,Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(),"eee"+email.getText().toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Please check your email for verification",Toast.LENGTH_SHORT).show();
 
                 Log.i("Email sending", "send");
             } catch (Exception e) {
@@ -280,7 +307,8 @@ public void sendemail() {
                 SharedPreferences.Editor mEditor = sharedPreferences.edit();
                 mEditor.putString("pcode", code);
                 mEditor.apply();
-                GmailSender sender = new GmailSender("000111karan@gmail.com", "xxxxxxxx");
+                // Fill your own credential
+                GmailSender sender = new GmailSender("000111karan@gmail.com", "xxxxxxxxx");
                 //subject, body, sender, to
                 sender.sendMail("E-Mail Verification Code",
                         code,
@@ -289,8 +317,8 @@ public void sendemail() {
 //                SharedPreferences.Editor mEditor = sharedPreferences.edit();
 //                mEditor.putString("vemail", vemail);
 //                mEditor.apply();
-                Toast.makeText(getApplicationContext(),"00veee"+vvemail,Toast.LENGTH_SHORT).show();
-                Toast.makeText(getApplicationContext(),"00eee"+email.getText().toString(),Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(getApplicationContext(),"00veee"+vvemail,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Please check your email for verification",Toast.LENGTH_SHORT).show();
 
                 Log.i("Email sending", "send");
             } catch (Exception e) {
@@ -372,19 +400,12 @@ public void savedata(){
             email.setText("");
             phone.setText("");
            // Toast.makeText(getApplicationContext(),"ffffff"+fname.getText().toString(),Toast.LENGTH_SHORT).show();
-
-
         }
-
-
+//        if (databaseHelper.countRecords() >=1&& isButton == true) {
+//            update();
+//        }
     }
-
-     if(isValid == true && isImageSelected == true){
-        update();
-
-     }
     else if (isImageSelected == false){
-
         AlertDialog alertDialog = new AlertDialog.Builder(Profile.this).create();
        // alertDialog.setTitle("Alert");
         alertDialog.setMessage("Please Select Profile Image");
@@ -412,11 +433,11 @@ public void update(){
     email.setText("");
     phone.setText("");
     //save.setText("SAVE");
-    Toast.makeText(getApplication(),"Updated",Toast.LENGTH_SHORT).show();
+    Toast.makeText(getApplication(),"Profile Updated",Toast.LENGTH_SHORT).show();
   //  isButton = false;
     pic.setImageDrawable(getResources().getDrawable(R.drawable.ic_menu_camera));
   //  startActivity(new Intent(Profile.this, MainActivity.class));
-
+uploadImage();
 
 }
 
@@ -454,7 +475,7 @@ public void update(){
         switch(requestCode) {
             case 2:
                 if(resultCode == RESULT_OK){
-                    Uri choosenImage = data.getData();
+                     choosenImage = data.getData();
 
                     if(choosenImage !=null){
 
@@ -464,7 +485,7 @@ public void update(){
                 }
         }
         if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK){
-            Uri choosenImage = data.getData();
+             choosenImage = data.getData();
 
             if(choosenImage !=null){
 
@@ -555,7 +576,6 @@ public void update(){
         return super.onSupportNavigateUp();
     }
 
-
     public void progressbar(){
     mProgress.setProgress(0);   // Main Progress
     mProgress.setSecondaryProgress(100); // Secondary Progress
@@ -599,6 +619,62 @@ public void update(){
         }
     }).start();
 }
+    private Bitmap convertToBitmap(byte[] b){
 
+        return BitmapFactory.decodeByteArray(b, 0, b.length);
+
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title"+img, null);
+        img ++;
+        return Uri.parse(path);
+    }
+    private void uploadImage() {
+        Uri uri = getImageUri(getApplicationContext(),convertToBitmap(db.getMoviep(1).getImage()));
+
+//        byte [] buf = db.getMoviep(1).getImage();
+//        String s = null;
+//        try {
+//            s = new String(buf, "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        Uri uri = Uri.parse(s);
+
+        if(uri != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+          //  progressDialog.setTitle("Uploading...");
+          //  progressDialog.show();
+
+            StorageReference ref = storageReference.child("images/"+ "pic"/*UUID.randomUUID().toString()*/);
+            ref.putFile(uri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                           // Toast.makeText(Profile.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(Profile.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                          //  progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+    }
 
 }

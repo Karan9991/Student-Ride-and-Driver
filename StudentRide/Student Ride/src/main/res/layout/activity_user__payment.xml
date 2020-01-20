@@ -31,13 +31,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_margin="16dp">
             <EditText
                 android:id="@+id/edt_amount"
-                android:hint="Choose the amount to pay (in USD)"
-                android:layout_width="match_parent"
+                android:hint="Choose the amount to pay (in CAD)"
+                android:layout_width="300dp"
                 android:inputType="number"
                 android:imeOptions="actionDone"
                 android:layout_height="wrap_content" />

@@ -122,7 +122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-       currentPolyline.setColor(getApplicationContext().getResources().getColor(R.color.colorBlue));
+       currentPolyline.setColor(getApplicationContext().getResources().getColor(R.color.progressbarcolor));
 
     }
     @Override

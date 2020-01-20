@@ -9,6 +9,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -77,10 +78,11 @@ public class Signin extends AppCompatActivity {
                     "$");
 //
     ProgressBar pbar;
-    View button_login, button_label,tvsignup,tvforgotpass;
+    View button_login, button_label,tvsignup,tvforgotpass,relativelay;
     private DisplayMetrics dm;
 FirebaseAuth firebaseAuth;
 FirebaseUser firebaseUser;
+    String pcode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,6 +164,8 @@ firebaseUser = firebaseAuth.getCurrentUser();
         pbar=(ProgressBar) findViewById(R.id.mainProgressBar1);
       //  button_icon=findViewById(R.id.button_icon);
         button_label=findViewById(R.id.button_label);
+        relativelay=findViewById(R.id.relativelay);
+
 
 
         dm=getResources().getDisplayMetrics();
@@ -173,8 +177,9 @@ firebaseUser = firebaseAuth.getCurrentUser();
         //  frag_login=new LoginFragment();
         //  frag_dashboard=new DashboardFragment();
         //    getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, frag_login).commit();
+        animateLayout();
         final ValueAnimator va=new ValueAnimator();
-        va.setDuration(1500);
+        va.setDuration(1300);
         va.setInterpolator(new DecelerateInterpolator());
         va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
             @Override
@@ -187,57 +192,19 @@ firebaseUser = firebaseAuth.getCurrentUser();
             }
         });
         button_login.animate().translationX(dm.widthPixels+button_login.getMeasuredWidth()).setDuration(0).setStartDelay(0).start();
-        button_login.animate().translationX(0).setStartDelay(6500).setDuration(1500).setInterpolator(new OvershootInterpolator()).start();
+        button_login.animate().translationX(0).setStartDelay(1300).setDuration(1200).setInterpolator(new OvershootInterpolator()).start();
 
         //click
         button_login.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View p1) {
                 if (checkvalidation()) {
-                    String pcode = sharedPreferences.getString("pcode", null);
-//                    if(pcode!=null){
-//                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Signin.this);
-//
-//                        //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-//
-//                        // Setting Dialog Title
-//                        alertDialog.setTitle("Enter Your Verification Code");
-//
-//                        // Setting Dialog Message
-//                        //alertDialog.setMessage("Enter Password");
-//                        final EditText input = new EditText(Signin.this);
-//                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-//                                LinearLayout.LayoutParams.MATCH_PARENT,
-//                                LinearLayout.LayoutParams.MATCH_PARENT);
-//                        input.setLayoutParams(lp);
-//                        alertDialog.setView(input);
-//                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-//                        input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
-//                        input.addTextChangedListener(new TextWatcher() {
-//                            @Override
-//                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                            }
-//
-//                            @Override
-//                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//                            }
-//
-//                            @Override
-//                            public void afterTextChanged(Editable editable) {
-//                                if (input.length()==4&&input.getText().toString().equals(pcode)){
-//                                    nextActivity();
-//                                }else if (input.length()==4&&input.getText().toString()!=pcode){
-//                                    Toast.makeText(getApplicationContext(),"Incorrect Verification Code",Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        });
-//
-//
-//                        alertDialog.show();
-//                    }
-//else {
+                     pcode = sharedPreferences.getString("pcode", null);
+                    //Toast.makeText(getApplicationContext(),pcode,Toast.LENGTH_SHORT).show();
+                    if(pcode!=null){
+                      alertd();
+                    }
+else {
                         if ((int) button_login.getTag() == 1) {
                             return;
                         } else if ((int) button_login.getTag() == 2) {
@@ -261,7 +228,7 @@ firebaseUser = firebaseAuth.getCurrentUser();
 
                             @Override
                             public void onAnimationEnd(Animator p1) {
-                              nextActivity();
+                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             }
 
                             @Override
@@ -274,7 +241,7 @@ firebaseUser = firebaseAuth.getCurrentUser();
                                 // TODO: Implement this method
                             }
                         }).start();
-                    //}
+                    }
                 }
             }
         });
@@ -296,7 +263,6 @@ public void nextActivity(){
     mEditor.putString("signin", "signed");
     mEditor.putString("pcode", null);
     mEditor.apply();
-    startActivity(new Intent(getApplicationContext(), MainActivity.class));
 }
 public boolean checkvalidation(){
                     if (db.countRecords() >= 1) {
@@ -383,5 +349,58 @@ public boolean checkvalidation(){
             passsign.setText(pwd);
             aSwitch.setChecked(true);
         }
+    }
+    public void alertd(){
+        final EditText input = new EditText(Signin.this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        final AlertDialog d = new AlertDialog.Builder(this)
+                .setView(input)
+                .setTitle("Enter E-Mail Verification Code")
+
+                .create();
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        input.setFilters(new InputFilter[] { new InputFilter.LengthFilter(4) });
+        input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (input.length()==4&&input.getText().toString().equals(pcode)){
+                    nextActivity();
+                    d.dismiss();
+                    Toast.makeText(getApplicationContext(),"E-Mail Verified",Toast.LENGTH_SHORT).show();
+
+
+                }else if (input.length()==4&&input.getText().toString()!=pcode){
+                    Toast.makeText(getApplicationContext(),"Incorrect Verification Code",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        d.show();
+    }
+    public void animateLayout(){
+        final ValueAnimator vaa=new ValueAnimator();
+        vaa.setDuration(1300);
+        vaa.setInterpolator(new DecelerateInterpolator());
+        vaa.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
+            @Override
+            public void onAnimationUpdate(ValueAnimator p1) {
+
+            }
+        });
+        relativelay.animate().translationX(dm.widthPixels+relativelay.getMeasuredWidth()).setDuration(0).setStartDelay(0).start();
+        relativelay.animate().translationX(0).setStartDelay(1300).setDuration(1200).setInterpolator(new OvershootInterpolator()).start();
+
     }
 }

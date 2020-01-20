@@ -42,7 +42,9 @@
         android:authorities="com.example.StudentDriver.Activity.MyProvider"
         android:exported="true"
         android:multiprocess="true" />
-</application>
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
+    </application>
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

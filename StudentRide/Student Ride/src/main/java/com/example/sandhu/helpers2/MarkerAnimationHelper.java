@@ -140,7 +140,7 @@ public final class MarkerAnimationHelper {
 //                    JourneyEventBus.getInstance().setOnJourneyEnd(endJourneyEvent);
                 }
                 ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
-                valueAnimator.setDuration(3000);
+                valueAnimator.setDuration(1000);
                 valueAnimator.setInterpolator(new LinearInterpolator());
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
@@ -161,17 +161,18 @@ public final class MarkerAnimationHelper {
                         marker.setRotation((float) getBearing(startPositionca, newPos));
                         //  Log.i("bearing","bbbbbbbbbbbbbbb"+ getBearing(startPosition, newPos));
                         // Log.i("sd",startPosition +"v"+ newPos);
-                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition
-                                (new CameraPosition.Builder().target(newPos)
-                                        .zoom(15.5f).build()));
+
+//                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition
+//                                (new CameraPosition.Builder().target(newPos)
+//                                        .zoom(15.5f).build()));
                     }
                 });
                 valueAnimator.start();
                 if (indexca != PointsParser.polyLineList.size() - 1) {
-                    handlerca.postDelayed(this, 3000);
+                    handlerca.postDelayed(this, 1000);
                 }
             }
-        }, 3000);
+        }, 1000);
     }
 
     private MarkerAnimationHelper() {

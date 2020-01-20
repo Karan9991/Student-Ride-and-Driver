@@ -40,7 +40,10 @@ import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.module.AppGlideModule;
 import com.example.StudentDriver.R;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -62,13 +65,31 @@ import com.example.StudentDriver.interfaces2.IPositiveNegativeListener;
 import com.example.StudentDriver.interfaces2.LatLngInterpolator;
 import com.example.StudentDriver.interfaces2.LatLngInterpolator.Spherical;
 import com.example.StudentDriver.model2.Driver;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+//import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+//import com.nostra13.universalimageloader.core.DisplayImageOptions;
+//import com.nostra13.universalimageloader.core.ImageLoader;
+//import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+//import com.nostra13.universalimageloader.core.assist.FailReason;
+//import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+//import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+//import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+//import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public final class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, ValueEventListener {
@@ -97,25 +118,97 @@ Button btn,ridecom;
     FirebaseDatabase firebaseCancelR = FirebaseDatabase.getInstance();
     DatabaseReference databaseRefCancelR = firebaseCancelR.getReference();
     DatabaseReference cancelRdata = databaseRefCancelR.child("Cancelride");
+
+    FirebaseDatabase firebaseclear = FirebaseDatabase.getInstance();
+    DatabaseReference databaseRefclear = firebaseclear.getReference();
+    DatabaseReference datrefclear = databaseRefclear.child("Clear");
+
+
+    FirebaseDatabase firebaseimage = FirebaseDatabase.getInstance();
+    DatabaseReference databaseRefimage = firebaseimage.getReference();
+    DatabaseReference dataimage = databaseRefimage.child("image");
+
     String data,datac;
-    ImageView image;
+    ImageView image,img;
+    //retrieving image from firebase
+    FirebaseStorage storage;
+    StorageReference storageReference;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main2);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference().child("images/pic.jpeg");
+
         res = new StringBuilder();
 btn = (Button)findViewById(R.id.pickedpassengerbtn);
 ridecom = (Button)findViewById(R.id.ridecompleted);
 sc = (SwitchCompat)findViewById(R.id.driverStatusSwitch);
         image = new ImageView(this);
+
+         dataimage.addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                 String link = dataSnapshot.getValue(String.class);
+                 Picasso.get().load(link).into(image);
+             }
+
+             @Override
+             public void onCancelled(@NonNull DatabaseError databaseError) {
+
+             }
+         });
+        // datac = storageReference.getDownloadUrl();
+       // Picasso.with(getApplicationContext()).load(storageReference.getDownloadUrl()).into(image);
+
 //        int widthPX = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
 //        int heightPX = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
 //        LinearLayout.LayoutParams layoutParams  = new LinearLayout.LayoutParams(widthPX, heightPX);
 //        image.setLayoutParams(layoutParams);
+//       datac = ""+storageReference.getDownloadUrl();
+////String url = "https://firebasestorage.googleapis.com/v0/b/citric-plexus-190723.appspot.com/o/images%2Fpic?alt=media&token=f3bd2de0-1d8d-4c63-8126-4913a724bf2e";
+//        Glide.with(getApplicationContext())
+//                .load(datac)
+//                .into(img);
+              //  Toast.makeText(getApplicationContext()," "+storageReference.getDownloadUrl(),Toast.LENGTH_SHORT).show();
 
 mdata.addValueEventListener(this);
         cancelRdata.addValueEventListener(this);
 
+//        storageReference.child("images/pic.jpeg").getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+//            @Override
+//            public void onSuccess(byte[] bytes) {
+//                //image.setImageBitmap(convertToBitmap(bytes));
+//                Toast.makeText(getApplicationContext(),"success",Toast.LENGTH_SHORT).show();
+//
+//                // Use the bytes to display the image
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception exception) {
+//                Toast.makeText(getApplicationContext(),"Tcimagep",Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Passenger : Karan")
+                // .setMessage(" "+contentProvider)
+                // .setIcon(image)
+                .setPositiveButton("Request Accept",
+                        new DialogInterface.OnClickListener() {
+                            @TargetApi(11)
+                            public void onClick(DialogInterface dialog, int id) {
+//
+
+                            }
+                        }).setView(image)
+                .setNegativeButton("Request Reject", new DialogInterface.OnClickListener() {
+                    @TargetApi(11)
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                }).show();
+//
 btn.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
@@ -136,6 +229,7 @@ ridecom.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View view) {
         mdata.removeValue();
+        datrefclear.setValue("clearmap");
     }
 });
         getSupportLoaderManager().initLoader(1, null, this);
@@ -227,44 +321,27 @@ if(dataSnapshot.getValue(String.class)!=null){
         @Override
         public void onLoadFinished
         (@NonNull androidx.loader.content.Loader < Cursor > loader, Cursor cursor){
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                //res.append("\n" + cursor.getString(cursor.getColumnIndex("id")) + "-" + cursor.getString(cursor.getColumnIndex("name")) + "-" + cursor.getString(cursor.getColumnIndex("source")) + "-" + cursor.getString(cursor.getColumnIndex("destination")));
-              //  res.append("\n" +  cursor.getString(cursor.getColumnIndex("name")));
-contentProvider = cursor.getString(cursor.getColumnIndex("name"));
-                image.setImageBitmap(convertToBitmap(cursor.getBlob(cursor.getColumnIndex("photo"))));
-               // image.setMaxHeight(10);
-                //image.setMaxWidth(10);
-             //  image.setLayoutParams(new ActionBar.LayoutParams(10,2));
-
-//                image.getLayoutParams().height = 10;
-  //              image.getLayoutParams().width = 10;
-              //  image.setImageDrawable(cursor.getBlob(cursor.getColumnIndex("photo")));
-                cursor.moveToNext();
-            }
+//            cursor.moveToFirst();
+  //          while (!cursor.isAfterLast()) {
+//                //res.append("\n" + cursor.getString(cursor.getColumnIndex("id")) + "-" + cursor.getString(cursor.getColumnIndex("name")) + "-" + cursor.getString(cursor.getColumnIndex("source")) + "-" + cursor.getString(cursor.getColumnIndex("destination")));
+//              //  res.append("\n" +  cursor.getString(cursor.getColumnIndex("name")));
+//contentProvider = cursor.getString(cursor.getColumnIndex("name"));
+//image.setImageBitmap(convertToBitmap(cursor.getBlob(cursor.getColumnIndex("photo"))));
+//               // image.setMaxHeight(10);
+//                //image.setMaxWidth(10);
+//             //  image.setLayoutParams(new ActionBar.LayoutParams(10,2));
+//
+////                image.getLayoutParams().height = 10;
+//  //              image.getLayoutParams().width = 10;
+//              //  image.setImageDrawable(cursor.getBlob(cursor.getColumnIndex("photo")));
+  //              cursor.moveToNext();
+//            }
 
           //  Toast.makeText(getApplicationContext(), "cp" + res, Toast.LENGTH_SHORT).show();
            // contentProvider = res.toString();
 
 
-            new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Passenger : "+contentProvider)
-                   // .setMessage(" "+contentProvider)
-                    // .setIcon(image)
-                    .setPositiveButton("Request Accept",
-                            new DialogInterface.OnClickListener() {
-                                @TargetApi(11)
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Toast.makeText(getApplicationContext(),"Tcp"+contentProvider,Toast.LENGTH_SHORT).show();
 
-                                }
-                            }).setView(image)
-                    .setNegativeButton("Request Reject", new DialogInterface.OnClickListener() {
-                        @TargetApi(11)
-                        public void onClick(DialogInterface dialog, int id) {
-
-                        }
-                    }).show();
 
         }
 
@@ -430,5 +507,26 @@ contentProvider = cursor.getString(cursor.getColumnIndex("name"));
         return BitmapFactory.decodeByteArray(b, 0, b.length);
 
     }
+public void alertDialog(){
+    new AlertDialog.Builder(MainActivity.this)
+            .setTitle("Passenger : ")
+            // .setMessage(" "+contentProvider)
+            // .setIcon(image)
+            .setPositiveButton("Request Accept",
+                    new DialogInterface.OnClickListener() {
+                        @TargetApi(11)
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            // Toast.makeText(getApplicationContext(),"Tcp"+contentProvider,Toast.LENGTH_SHORT).show();
+
+                        }
+                    }).setView(image)
+            .setNegativeButton("Request Reject", new DialogInterface.OnClickListener() {
+                @TargetApi(11)
+                public void onClick(DialogInterface dialog, int id) {
+
+                }
+            }).show();
+}
 
 }

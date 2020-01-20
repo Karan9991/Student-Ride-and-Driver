@@ -133,7 +133,8 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
     private static final int CAMERA_REQUEST = 200;
     public Bitmap bp;
     public byte[] photo;
-
+    boolean adddr;
+    Marker markeragain;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,7 +150,7 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
        // driver = new Driver();
         bp = convertToBitmap(databaseHelper.getMoviep(1).getImage());
        // bp=decodeUri(databaseHelper.getMoviep(1).getImage(), 400);
-
+adddr = false;
         getValues();
         ContentValues values = new ContentValues();
         values.put(MyProvider.name, databaseHelper.getMoviep(1).getFname());
@@ -174,7 +175,7 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
         }
         if (count>=1) {
             getContentResolver().update(MyProvider.CONTENT_URI, values,null,null);
-                    Toast.makeText(getBaseContext(), "upda "+count, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), "upda "+count+values, Toast.LENGTH_SHORT).show();
 
         }
 //        Toast.makeText(getBaseContext(), "New "+count, Toast.LENGTH_SHORT)
@@ -228,11 +229,18 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
             String key = dataSnapshot.getKey();
             if (key.equals("passengerpicked")){
                 data = dataSnapshot.getValue(String.class);
+             adddr = true;
+            animateAgain();
                // Toast.makeText(getApplicationContext(),"firebase "+data,Toast.LENGTH_SHORT).show();
             }else  if (key.equals("Cancelride")){
                 rideCanceldata = dataSnapshot.getValue(String.class);
+                googleMap.clear();
                   //Toast.makeText(getApplicationContext(),"firebase "+rideCanceldata,Toast.LENGTH_SHORT).show();
             }
+        else  if (key.equals("Clear")){
+            googleMap.clear();
+            //Toast.makeText(getApplicationContext(),"firebase "+rideCanceldata,Toast.LENGTH_SHORT).show();
+        }
             else {
                 data = null;
             }
@@ -470,10 +478,11 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
         if (currentPolyline != null)
             currentPolyline.remove();
         currentPolyline = googleMap.addPolyline((PolylineOptions) values[0]);
-        currentPolyline.setColor(getApplicationContext().getResources().getColor(R.color.colorBlue));
+        currentPolyline.setColor(getApplicationContext().getResources().getColor(R.color.progressbarcolor));
 
     }
     //////////////////////////////////////////////
+
     @Override
     public void onDriverAdded(Driver var1) {
         MarkerOptions markerOptions = this.googleMapHelper.getDriverMarkerOptions(new LatLng(var1.getLat(), var1.getLng())).flat(true);
@@ -484,13 +493,13 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
         MarkerCollection.INSTANCE.insertMarker(marker);
         TextView var4 = (TextView)this._$_findCachedViewById(R.id.totalOnlineDrivers);
         var4.setText((CharSequence)(this.getResources().getString(R.string.total_online_drivers) + " " + MarkerCollection.INSTANCE.allMarkers().size()));
-
+         markeragain = marker;
        // Toast.makeText(getBaseContext(), "driver added"+var1.getLat()+var1.getLng(), Toast.LENGTH_SHORT).show();
-        place1 = new MarkerOptions().position(new LatLng(43.658038, -79.760535)).title("Location 1");
-        place2 = new MarkerOptions().position(new LatLng(var1.getLat(), var1.getLng())).title("Driver");
-       // googleMap.addMarker(place1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-       // googleMap.addMarker(place2).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        new FetchURL(MainActivity.this).execute(getUrl(place2.getPosition(), place1.getPosition(), "driving"), "driving");
+//        place1 = new MarkerOptions().position(new LatLng(43.658038, -79.760535)).title("Location 1");
+//        place2 = new MarkerOptions().position(new LatLng(var1.getLat(), var1.getLng())).title("Driver");
+//       // googleMap.addMarker(place1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+//       // googleMap.addMarker(place2).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+//        new FetchURL(MainActivity.this).execute(getUrl(place2.getPosition(), place1.getPosition(), "driving"), "driving");
   //      MarkerAnimationHelper var100000 = MarkerAnimationHelper.INSTANCE;
 //var100000.createAnimation(marker, mMap);
 
@@ -511,25 +520,35 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 //            e.printStackTrace();
 //        }
 //        Marker markerr = MarkerCollection.INSTANCE.getMarker(var1.getDriverId());
-//        MarkerAnimationHelper var10000r = MarkerAnimationHelper.INSTANCE;
-//        if (data==null) {
-//            place1 = new MarkerOptions().position(new LatLng(43.658038, -79.760535)).title("Location 1");
-//            place2 = new MarkerOptions().position(new LatLng(var1.getLat(), var1.getLng())).title("Driver");
-//            //googleMap.addMarker(place1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-//            // googleMap.addMarker(place2).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-//            new FetchURL(MainActivity.this).execute(getUrl(place2.getPosition(), place1.getPosition(), "driving"), "driving");
-////            Toast.makeText(getBaseContext(), "database" + data, Toast.LENGTH_SHORT)
-////                    .show();
-//            var10000r.createAnimation(marker,mMap);
-//        }else {
-////43.645458, -79.750877  61 michigan ave
-//            place3 = new MarkerOptions().position(new LatLng(gpsTracker.latitude,gpsTracker.longitude)).title("source");
-//            place4 = new MarkerOptions().position(new LatLng(dlat, dlng)).title("destination");
-//            new FetchURL(MainActivity.this).execute(getUrl(place3.getPosition(), place4.getPosition(), "driving"), "driving");
-//            //  Toast.makeText(getBaseContext(), "database61" + data, Toast.LENGTH_SHORT).show();
-//            var10000r.createAnimation(marker,mMap);
-//        }
+        MarkerAnimationHelper var10000r = MarkerAnimationHelper.INSTANCE;
+        if (data==null) {
+            place1 = new MarkerOptions().position(new LatLng(43.645277, -79.747308)).title("Passenger");
+            place2 = new MarkerOptions().position(new LatLng(var1.getLat(), var1.getLng())).title("Driver");
+            googleMap.addMarker(place1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            // googleMap.addMarker(place2).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            new FetchURL(MainActivity.this).execute(getUrl(place2.getPosition(), place1.getPosition(), "driving"), "driving");
+//            Toast.makeText(getBaseContext(), "database" + data, Toast.LENGTH_SHORT)
+//                    .show();
+            var10000r.createAnimation(marker,mMap);
+        }else {
+//43.645458, -79.750877  61 michigan ave
+
+            place3 = new MarkerOptions().position(new LatLng(43.645277,-79.747308)).title("source");
+            place4 = new MarkerOptions().position(new LatLng(dlat, dlng)).title("Destination");
+            new FetchURL(MainActivity.this).execute(getUrl(place3.getPosition(), place4.getPosition(), "driving"), "driving");
+            //  Toast.makeText(getBaseContext(), "database61" + data, Toast.LENGTH_SHORT).show();
+            var10000r.createAnimation(marker,mMap);
+        }
     }
+public void animateAgain(){
+    MarkerAnimationHelper var10000r = MarkerAnimationHelper.INSTANCE;
+
+    place3 = new MarkerOptions().position(new LatLng(43.645277,-79.747308)).title("source");
+    place4 = new MarkerOptions().position(new LatLng(dlat, dlng)).title("Destination");
+    new FetchURL(MainActivity.this).execute(getUrl(place3.getPosition(), place4.getPosition(), "driving"), "driving");
+    //  Toast.makeText(getBaseContext(), "database61" + data, Toast.LENGTH_SHORT).show();
+    var10000r.createAnimation(markeragain,mMap);
+}
 
     @Override
     public void onDriverRemoved(Driver var1) {
@@ -587,7 +606,9 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 
         final LatLng endPosition = new LatLng(43.658038, -79.760535);
 //var10000.animateMarkerToGB(marker, new LatLng(var1.getLat(), var1.getLng()), (LatLngInterpolatorNew)(new LinearFixed()));
-        var10000.animateMarkerToGB(marker, new LatLng(var1.getLat(), var1.getLng()), (LatLngInterpolator)(new Spherical()));
+
+     /////////vv
+   //     var10000.animateMarkerToGB(marker, new LatLng(var1.getLat(), var1.getLng()), (LatLngInterpolator)(new Spherical()));
 
         // var10000.animateMarkerToGB(marker, new LatLng(var1.getLat(), var1.getLng()), (LatLngInterpolator)(new LatLngInterpolator.Spherical()));
      //   var10000.animateMarkerToGB(marker, new LatLng(var1.getLat(), var1.getLng()), (LatLngInterpolator)(new Spherical()));
@@ -596,8 +617,10 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 //     marker.setRotation((float) getBearingBetweenTwoPoints1(startPosition, new LatLng(var1.getLat(), var1.getLng())));
       //  Toast.makeText(getBaseContext(), "driver updated"+var1.getLat()+var1.getLng(), Toast.LENGTH_SHORT)
         //        .show();
+
+      //  uncomment this
         if (data==null) {
-            place1 = new MarkerOptions().position(new LatLng(43.658038, -79.760535)).title("Location 1");
+            place1 = new MarkerOptions().position(new LatLng(43.645277, -79.747308)).title("Passenger");
             place2 = new MarkerOptions().position(new LatLng(var1.getLat(), var1.getLng())).title("Driver");
            //googleMap.addMarker(place1).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             // googleMap.addMarker(place2).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
@@ -605,9 +628,10 @@ public final class MainActivity extends AppCompatActivity implements FirebaseDri
 //            Toast.makeText(getBaseContext(), "database" + data, Toast.LENGTH_SHORT)
 //                    .show();
         }else {
+           // callDriveradd(var1);
 //43.645458, -79.750877  61 michigan ave
-            place3 = new MarkerOptions().position(new LatLng(gpsTracker.latitude,gpsTracker.longitude)).title("source");
-            place4 = new MarkerOptions().position(new LatLng(dlat, dlng)).title("destination");
+            place3 = new MarkerOptions().position(new LatLng(43.645277,-79.747308)).title("source");
+            place4 = new MarkerOptions().position(new LatLng(dlat, dlng)).title("Destination");
             new FetchURL(MainActivity.this).execute(getUrl(place3.getPosition(), place4.getPosition(), "driving"), "driving");
           //  Toast.makeText(getBaseContext(), "database61" + data, Toast.LENGTH_SHORT).show();
 
