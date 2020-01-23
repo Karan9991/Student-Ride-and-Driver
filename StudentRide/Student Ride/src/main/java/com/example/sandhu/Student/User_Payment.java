@@ -58,8 +58,10 @@ public class User_Payment extends AppCompatActivity {
     private static final int REQUEST_CODE = 1234;
 //    final String API_GET_TOKEN = "http://192.168.2.24:80/braintree/main.php";
 //final String API_CHECK_OUT = "http://192.168.2.24:80/braintree/checkout.php";
-    final String API_GET_TOKEN = "http://192.168.2.17:80/braintree/main.php";
-    final String API_CHECK_OUT = "http://192.168.2.17:80/braintree/checkout.php";
+
+    //fill your device IP address
+    final String API_GET_TOKEN = "http://192.xxx.x.xx:80/braintree/main.php";
+    final String API_CHECK_OUT = "http://192.xxx.x.xx:80/braintree/checkout.php";
 
 String token,amount;
 HashMap<String,String> paramsHash;
